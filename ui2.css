@@ -325,3 +325,114 @@ body #menuBtn.open{border:3px solid #fff!important;box-shadow:0 0 0 2px #ee3f8e,
 /* J4: 1つ戻す=水色系(保存データの追加/読込と同じ)、クリア=白地+赤文字(削除と同じ) */
 .history .actions .ghost.undo{background:#e4f8ff!important;color:#075b70!important;border-color:#94dced!important}
 .history .actions .ghost.clr{background:#fff!important;color:#d32f2f!important;border-color:#e0b4ae!important}
+
+/* ===== v37: 入力セッション・パラレル表示 ===== */
+/* 開閉(出入りは同じ動きで) */
+.coll{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.4,0,.2,1)}
+.coll.open{grid-template-rows:1fr}
+.coll>.colli{overflow:hidden;min-height:0}
+/* 上部の筐体ラベル */
+.sessbar{display:flex;align-items:center;gap:10px;margin:10px 0;padding:8px 12px;background:#fff;border:2px solid #ee3f8e;border-radius:14px}
+.sessbar:empty{display:none}
+.sessbar .stext{flex:1;min-width:0;display:flex;flex-direction:column}
+.sessbar .stext b{color:#ee3f8e;font-size:1rem;word-break:break-all}
+.sessbar .stext small,.sitem .stext small{color:#70778c;font-size:.74rem}
+.schip{flex:none;width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(32,36,58,.18)}
+/* 選択画面 */
+#sessOv{position:fixed;inset:0;z-index:1500;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(255,246,250,.97);animation:viewIn .22s ease}
+#sessOv.out{animation:floatOut .22s ease forwards;pointer-events:none}
+#sessOv .spanel{width:100%;max-width:420px;max-height:90vh;overflow:auto;background:#fff;border:2px solid #ee3f8e;border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(238,63,142,.18)}
+#sessOv h3{margin:0 0 10px;color:#ee3f8e;font-family:var(--hfont);font-size:1.05rem}
+#sessOv .snote{color:#70778c;font-size:.85rem}
+#sessOv .slist{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.sitem{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid #f8a5c9;border-radius:12px;background:#fff;cursor:pointer}
+.sitem.on{background:#fff0f6;border-color:#ee3f8e}
+.sitem .stext{flex:1;min-width:0;display:flex;flex-direction:column}
+.sitem .stext b{color:#ee3f8e;word-break:break-all}
+.sitem .sdel{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid #e0b4ae;background:#fff;color:#d32f2f;font-size:1.1rem;line-height:1;padding:0}
+#sessOv .snew{border-top:1.5px dashed #f8a5c9;padding-top:12px}
+#sessOv .snew b{color:#ee3f8e}
+#sessOv .snew label{display:block;margin:8px 0 4px;color:#ee3f8e;font-size:13px;font-weight:800}
+#sessOv .snew input{width:100%;box-sizing:border-box;font-size:16px;padding:11px 14px;border:1.5px solid #ee3f8e;border-radius:99px;color:#ee3f8e;background:#fff;font-family:inherit}
+#sessOv .srow{display:flex;justify-content:flex-end;margin-top:12px}
+/* パラレル情報(配列候補) */
+.parline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-top:8px}
+.parbadge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.76rem;font-weight:800;white-space:nowrap}
+.parbadge.done{background:#dff3e4;color:#1f7a45;border:1.5px solid #8fd0a2}
+.parbadge.todo{background:#ffe7c2;color:#9a5a00;border:1.5px solid #f0b95a}
+.parname{flex:1;min-width:0;font-size:.82rem;font-weight:700;color:#ee3f8e;word-break:break-all}
+.parmore{border:1px solid #f8a5c9;background:#fff;color:#ee3f8e;border-radius:99px;padding:1px 8px;font-size:.72rem;font-weight:800}
+.parnames{margin-top:4px;font-size:.78rem;font-weight:600;line-height:1.6}
+.parjump,.restbtn,.parq-btn{border:1.5px solid #ee3f8e;background:#fff;color:#ee3f8e;border-radius:99px;font-weight:800;font-family:inherit}
+.parjump{padding:5px 12px;font-size:.76rem}
+.restbtn{display:block;width:100%;margin-top:8px;padding:8px;font-size:.8rem}
+.parq-btn{display:block;width:100%;margin:10px 0;padding:10px 14px;font-size:.85rem;text-align:left}
+.parquick{display:flex;flex-direction:column;gap:6px;padding:8px 2px 2px}
+.pqrow{display:flex;gap:10px;align-items:baseline;padding:7px 10px;background:#fff;border:1.5px solid #f8a5c9;border-radius:10px;font-size:.82rem;color:#ee3f8e}
+.pqrow b{flex:none;min-width:42px}
+.pqrow small{margin-left:4px;color:#70778c}
+/* 配列詳細のボタン: 2段(No./パラレル名・枠) */
+.arrbtn .arrpar{display:block;margin-top:3px;font-size:.7rem;line-height:1.35;color:#ee3f8e;overflow-wrap:anywhere}
+/* パラレルへジャンプしたとき、その枠を一瞬光らせる */
+@keyframes slotFlash{0%,100%{box-shadow:0 0 0 0 rgba(238,63,142,0)}30%{box-shadow:0 0 0 8px rgba(238,63,142,.35)}}
+.slot.flash{animation:slotFlash 1.7s ease}
+
+/* ===== v38 ===== */
+/* 出入りの動き(A〜G): 追加=ふわっと出る / 削除=同じ動きで消える / 差し替え=ふわっと入れ替わる */
+@keyframes swapIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes rowIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes rowOut{from{opacity:1;transform:none;max-height:60px}to{opacity:0;transform:translateX(18px)}}
+.swap{animation:swapIn .24s ease}
+.chip.new{animation:rowIn .25s ease}
+.chip.leaving,.saved-item.leaving{animation:rowOut .2s ease forwards;pointer-events:none}
+/* D: 画像のON/OFFは、ふわっと出入りしながら大きさが変わる */
+.cbox{transition:width .25s ease,opacity .2s ease}
+body.hide-images .cbox{display:block!important;width:0!important;opacity:0;box-shadow:none;pointer-events:none}
+/* R: 画像OFFのときは、行を文字の高さに合わせて細くする */
+body.hide-images .slotlist .slot{padding:3px!important}
+body.hide-images .slotlist .slot .slotin{padding:6px 10px!important;gap:8px}
+body.hide-images .slotopt{min-height:0!important;padding:0!important;gap:6px}
+body.hide-images .slotlist .slot .slotopts{gap:3px}
+body.hide-images .optbody{flex-direction:row;align-items:center;gap:8px}
+body.hide-images .optbody .badge{align-self:center;flex:none}
+body.hide-images .slotlist .slot .slotnum{min-width:30px;width:30px;height:30px;font-size:.8rem!important}
+/* J: 読込中の保存名 */
+.loadedname{display:none;margin:6px 0 2px;padding:5px 10px;border-radius:10px;background:#e4f8ff;border:1px solid #94dced;color:#075b70;font-size:.8rem}
+.loadedname.show{display:block}
+.loadedname b{word-break:break-all}
+.loadedname .edited{margin-left:6px;color:#9a5a00;font-weight:800}
+/* T: 保存データの★/☆ */
+.starlegend{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:6px 0 10px;padding:9px 12px;border-radius:12px;background:#fff7d6;border:1.5px solid #ecc95c;color:#6b4e00;font-size:.84rem;font-weight:700}
+.starlegend small{flex:1 1 100%;font-weight:600;color:#8a6a1a;font-size:.74rem}
+.slbadge{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#fff;border:1.5px solid #ecc95c;color:#c79a00;font-size:1rem;margin-right:2px}
+.slbadge.on{background:#f3c942;color:#fff}
+.saved-item{flex-wrap:wrap}
+.saved-item .sinfo{flex:1 1 0;min-width:0}
+.saved-item .saved-item-actions{flex:1 1 100%;justify-content:flex-end}
+.starbtn{flex:none;width:38px;height:38px;border-radius:50%;border:1.5px solid #ecc95c;background:#fff;color:#c79a00;font-size:1.25rem;line-height:1;padding:0}
+.starbtn.on{background:#f3c942;color:#fff;border-color:#e0b020}
+/* Q: パラレル行のレイアウト(バッジとジャンプは1行、カード名は下に1行ぶん広く) */
+.parline{display:block;margin-top:8px}
+.parrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 8px}
+.parline .parname{display:block;flex:none;margin-top:6px;font-size:.86rem;font-weight:700;color:#ee3f8e;word-break:normal;overflow-wrap:anywhere;line-height:1.5}
+.parline .parmore{margin-left:4px}
+/* P: パラレル早見は、枠数を先に・大きく */
+.parq-btn{background:#ee3f8e!important;color:#fff!important;font-size:.92rem!important;padding:12px 16px!important}
+.parquick{gap:8px}
+.pqrow{align-items:center;padding:8px 12px;gap:12px;background:#fff}
+.pqslot{flex:none;display:inline-flex;align-items:baseline;gap:2px;min-width:78px;justify-content:center;padding:6px 10px;border-radius:12px;background:#ee3f8e;color:#fff;font-weight:800;font-size:.8rem}
+.pqslot b{min-width:0;font-size:1.35rem;line-height:1}
+.pqname{flex:1;min-width:0;font-size:.84rem;line-height:1.4;overflow-wrap:anywhere}
+.pqname .pqno{display:block;color:#70778c;font-size:.72rem;font-weight:700}
+.pqname small{margin-left:4px}
+/* S: ドックのボタンに色を付けて区別しやすく(現在位置・パラレルへ・画像ONは現行のまま) */
+#arrayFabContainer .fab-btn[onclick="goPrevCard()"],#arrayFabContainer .fab-btn[onclick="goNextCard()"]{background:#e4f8ff!important;color:#075b70!important;border-color:#94dced!important}
+#arrayFabContainer .fab-btn[onclick="scrollToTop()"]{background:#efe6ff!important;color:#5b3d9a!important;border-color:#c9b4f0!important}
+#arrayFabContainer #fabImg:not(.on){background:#fff4c9!important;color:#7a5a00!important;border-color:#ecc95c!important}
+/* W/M: セッション選択画面 */
+#sessOv .snotes{margin:0 0 12px;padding:10px 12px 10px 26px;background:#fff0f6;border-radius:12px;color:#ee3f8e;font-size:.8rem;line-height:1.6}
+#sessOv .snotes li{margin:2px 0}
+.sitem .sdup{flex:none;padding:4px 10px;border-radius:99px;border:1.5px solid #94dced;background:#e4f8ff;color:#075b70;font-size:.76rem;font-weight:800}
+.sdupwarn:not(:empty){margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff7d6;border:1.5px solid #ecc95c;color:#6b4e00;font-size:.82rem}
+.sdupwarn p{margin:0 0 8px}
+.sdupwarn .srow2{display:flex;gap:8px;flex-wrap:wrap}
